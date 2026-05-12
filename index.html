@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Samuel Corchia – Développeur Back PHP Senior</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #F5F2EE;
+      --surface: #FFFFFF;
+      --accent: #C8511B;
+      --accent-light: #F0E6DF;
+      --text: #1A1714;
+      --muted: #6B6560;
+      --border: #E2DDD8;
+      --sidebar-bg: #1A1714;
+      --sidebar-text: #F5F2EE;
+      --sidebar-muted: #A09A94;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 960px;
+      background: var(--surface);
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      padding: 44px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .photo-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .photo-placeholder {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.4rem;
+      color: #fff;
+      letter-spacing: 1px;
+      flex-shrink: 0;
+      /* Remplacez par : background-image: url('photo.jpg'); background-size: cover; */
+    }
+
+    .sidebar-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      text-align: center;
+      line-height: 1.3;
+      color: var(--sidebar-text);
+    }
+
+    .sidebar-title {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .contact-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .contact-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--sidebar-muted);
+      line-height: 1.45;
+    }
+
+    .contact-list li .ico {
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--accent);
+    }
+
+    .skill-group { margin-bottom: 14px; }
+
+    .skill-group-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sidebar-muted);
+      margin-bottom: 7px;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--sidebar-text);
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 2px;
+      font-weight: 400;
+    }
+
+    .tag.accent {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .lang-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .lang-name {
+      font-size: 0.82rem;
+      color: var(--sidebar-text);
+    }
+
+    .lang-level {
+      font-size: 0.7rem;
+      color: var(--sidebar-muted);
+      font-style: italic;
+    }
+
+    .formation-item {
+      margin-bottom: 10px;
+    }
+
+    .formation-year {
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .formation-title {
+      font-size: 0.8rem;
+      color: var(--sidebar-text);
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+
+    .interests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .interest-tag {
+      font-size: 0.75rem;
+      color: var(--sidebar-muted);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    /* ─── MAIN ─── */
+    .main {
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .main-header {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 20px;
+    }
+
+    .main-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .main-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 6px;
+    }
+
+    .main-summary {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 14px;
+    }
+
+    .section-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 16px;
+    }
+
+    .exp-date {
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 600;
+      padding-top: 2px;
+      letter-spacing: 0.03em;
+    }
+    
+    .exp-role {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .exp-company {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .exp-bullets {
+      margin-top: 8px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .exp-bullets li {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.55;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .exp-bullets li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.7rem;
+      top: 2px;
+    }
+
+    .exp-stack {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .stack-tag {
+      font-size: 0.68rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 2px;
+      font-weight: 500;
+    }
+
+    .divider-line {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    @media print {
+      body { padding: 0; background: white; }
+      .page { box-shadow: none; max-width: 100%; border-radius: 0; }
+    }
+
+    @media (max-width: 700px) {
+      .page { grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <aside class="sidebar">
+
+    <div class="photo-block">
+      <!-- Photo : remplacer le div ci-dessous par <img src="photo.jpg" ...> -->
+      <img src="./images/photo.jpg" width="120" height="150" alt="Photo de Samuel Corchia" />
+      <div>
+        <div class="sidebar-name">Samuel Corchia</div>
+        <div class="sidebar-title">Dév. Back PHP Senior</div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div>
+      <div class="sidebar-section-title">Contact</div>
+      <ul class="contact-list">
+        <li><span class="ico">✉</span> samuel.corchia@gmail.com</li>
+        <li><span class="ico">📍</span> La Garenne-Colombes</li>
+        <li><span class="ico">🎂</span> 45 ans</li>
+        <li><span class="ico">💼</span> Télétravail ou présentiel</li>
+        <li><span class="ico">🚗</span> Permis B</li>
+      </ul>
+    </div>
+
+    <!-- Compétences -->
+    <div>
+      <div class="sidebar-section-title">Compétences</div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Langages</div>
+        <div class="skill-tags">
+          <span class="tag accent">PHP 8.3+</span>
+          <span class="tag">SQL</span>
+          <span class="tag">PL/SQL</span>
+          <span class="tag">JavaScript</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Frameworks</div>
+        <div class="skill-tags">
+          <span class="tag accent">Laravel 12</span>
+          <span class="tag">Blade</span>
+          <span class="tag">Eloquent</span>
+          <span class="tag">Zend</span>
+          <span class="tag">CodeIgniter</span>
+          <span class="tag">Smarty</span>
+          <span class="tag">Twig</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Bases de données</div>
+        <div class="skill-tags">
+          <span class="tag">MySQL</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Oracle</span>
+          <span class="tag">Merise</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">E-commerce & Logistique</div>
+        <div class="skill-tags">
+          <span class="tag">Flux EDI</span>
+          <span class="tag">API REST</span>
+          <span class="tag">Paiement en ligne</span>
+          <span class="tag">Gestion entrepôt</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Outils & DevOps</div>
+        <div class="skill-tags">
+          <span class="tag accent">Docker</span>
+          <span class="tag accent">Git</span>
+          <span class="tag">ngrok</span>
+          <span class="tag">Jira</span>
+          <span class="tag">Kibana</span>
+          <span class="tag">Postman</span>
+          <span class="tag">Selenium</span>
+          <span class="tag">Linux</span>
+          <span class="tag">PhpStorm</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-label">Méthodes</div>
+        <div class="skill-tags">
+          <span class="tag">Scrum</span>
+          <span class="tag">Sprint</span>
+          <span class="tag">Poker Planning</span>
+          <span class="tag">Code Review</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Langues -->
+    <div>
+      <div class="sidebar-section-title">Langues</div>
+      <div class="lang-item">
+        <span class="lang-name">Anglais</span>
+        <span class="lang-level">Professionnel</span>
+      </div>
+      <div class="lang-item">
+        <span class="lang-name">Espagnol</span>
+        <span class="lang-level">Notions</span>
+      </div>
+    </div>
+
+    <!-- Formations -->
+    <div>
+      <div class="sidebar-section-title">Formations</div>
+      <div class="formation-item">
+        <div class="formation-year">2002</div>
+        <div class="formation-title">Concepteur Internet / Intranet (Alternance) – Emailjob</div>
+      </div>
+      <div class="formation-item">
+        <div class="formation-year">2000</div>
+        <div class="formation-title">BTS Informatique de Gestion – Développeur d'application</div>
+      </div>
+    </div>
+
+    <!-- Centres d'intérêt -->
+    <div>
+      <div class="sidebar-section-title">Centres d'intérêt</div>
+      <div class="interests">
+        <span class="interest-tag">✈ Voyages – Asie, Europe</span>
+        <span class="interest-tag">⚽ Football</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════ MAIN ═══════════════ -->
+  <main class="main">
+
+    <div class="main-header">
+      <div class="main-name">Samuel<br>Corchia</div>
+      <div class="main-title">
+        Développeur Back PHP Senior
+        <br />E-commerce & Logistique · Laravel · Open to Work
+      </div>
+      <p class="main-summary">
+        Développeur Back PHP Senior avec 20 ans d'expérience dans les écosystèmes e-commerce et logistique, 
+        j'ai construit l'essentiel de mon expertise chez BazarChic — en partant du code PHP natif legacy jusqu'au pilotage technique d'une squad supply chain complète.
+        Je sais lire et faire évoluer une codebase complexe sans tout casser, 
+        garantir la disponibilité de plateformes à fort trafic, 
+        et encadrer des équipes dans des environnements Agiles exigeants.
+        Aujourd'hui je me modernise activement : PHP 8.3, Laravel 12, Docker, Git — avec des projets concrets réalisés en autonomie. 
+        Curieux et ouvert aux frameworks modernes, je reste ancré dans ce que je fais vraiment bien : le back-end PHP, les flux logistiques, et l'architecture e-commerce.
+        Je cherche un CDI stable dans une équipe soudée, sur un produit avec de la profondeur 
+        — pas juste une mission. 
+        Disponible à partir du 4 mai 2026.
+      </p>
+    </div>
+
+    <!-- Expériences -->
+    <section>
+      <div class="section-title">Expériences professionnelles</div>
+      <div class="exp-list">
+
+        <!-- Freelance -->
+        <div class="exp-item">
+          <div class="exp-date">2025 – 2026</div>
+          <div class="exp-body">
+            <div class="exp-role">Freelance | Expert Backend & Modernisation Tech</div>
+            <br>
+            <div>
+              <p>Période dédiée à l'expertise technique, au conseil et à la mise en pratique des derniers standards PHP/Laravel à travers des projets concrets.</p>
+            </div>
+            <br>
+            <div>
+              <p>
+                <b>Projet phare : Système de réservation complet d'un établissement de restauration (<a href="https://alachaume.duckdns.org/" target="_blank">Voir le projet</a>)</b>
+                <ul class="exp-bullets">
+                  <li><u>Architecture & Backend</u>: Développement sous Laravel 12 (PHP 8.3), gestion des services (midi/soir), des horaires dynamiques et des flux de réservations.</li>
+                  <li><u>DevOps & Infra</u>: Mise en place d'un environnement conteneurisé avec Docker (Dev vs Prod), orchestration via Traefik, et déploiement sur serveur Hetzner CX33.</li>
+                  <li><u>IA & Intégration</u>: Automatisation des réponses aux avis Google via l'API Grok (xAI).</li>
+                  <li><u>Workflow</u>: CI/CD avec Git, gestion des environnements (.env), et monitoring des mails (Mailpit/Resend).</li>
+                </ul>
+              </p>
+            </div>
+            <div class="exp-stack">
+              <span class="stack-tag">PHP 8.3+</span>
+              <span class="stack-tag">Laravel 12</span>
+              <span class="stack-tag">MySQL</span>
+              <span class="stack-tag">Docker</span>
+              <span class="stack-tag">Blade</span>
+              <span class="stack-tag">Git</span>
+              <span class="stack-tag">Nginx</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider-line"/>
+
+        <!-- BazarChic Lead Dev -->
+        <div class="exp-item">
+          <div class="exp-date">2019 – 2024</div>
+          <div class="exp-body">
+            <div class="exp-role">Lead Développeur Back PHP · Squad Supply Chain</div>
+            <div class="exp-company">BazarChic</div>
+            <br>
+            <div>
+              <p>Pilotage technique d'une squad supply chain sur une plateforme e-commerce PHP natif à fort trafic — de la conception à la mise en production.</p>
+            </div>
+            <ul class="exp-bullets">
+              <li><u>Back-end & Architecture</u>: Développement et maintenance d'une codebase PHP natif legacy complexe. Conception d'outils d'administration d'entrepôts physiques, cartographie des emplacements et gestion des stocks.</li>
+              <li><u>Flux logistiques</u>: Mise en place de flux EDI complexes avec les transporteurs nationaux. Informatisation de l'inventaire comptable. Intégration de nouveaux modes de livraison.</li>
+              <li><u>Management & Agilité</u>: Encadrement technique de développeurs, animation des rituels Agiles (Daily, Poker Planning, Sprints, Code Review, Pair Programming). Collaboration étroite avec le Product Owner.</li>
+              <li><u>Monitoring & Qualité</u>: Suivi des performances via Kibana, pilotage du budget et des ressources.</li>
+            </ul>
+            <div class="exp-stack">
+              <span class="stack-tag">PHP 7</span>
+              <span class="stack-tag">MySQL</span>
+              <span class="stack-tag">JavaScript</span>
+              <span class="stack-tag">Kibana</span>
+              <span class="stack-tag">Twig</span>
+              <span class="stack-tag">PhpStorm</span>
+              <span class="stack-tag">Jira</span>
+              <span class="stack-tag">Agile</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider-line"/>
+
+        <!-- BazarChic Maintenance -->
+        <div class="exp-item">
+          <div class="exp-date">2016 – 2019</div>
+          <div class="exp-body">
+            <div class="exp-role">Responsable Maintenance Applicative (TMA)</div>
+            <div class="exp-company">BazarChic</div>
+            <br>
+            <div>
+              <p>Garant du bon fonctionnement de l'ensemble de la plateforme applicative — front, back et bases de données — sur un site e-commerce PHP natif à fort trafic.</p>
+            </div>
+            <ul class="exp-bullets">
+              <li><u>Monitoring & Disponibilité</u>: Surveillance continue des plateformes via Kibana, détection et correction des erreurs d'exploitation en temps réel.</li>
+              <li><u>Maintenance & Évolutions</u>: Prise en charge des demandes d'évolution et de maintenance multi-services. Gestion de mini-projets en autonomie (outils de stats, relance panier, etc.).</li>
+              <li><u>Transversalité</u>: Interface entre les équipes métier et l'équipe développement projet — traduction des besoins fonctionnels en solutions techniques.</li>
+            </ul>
+            <div class="exp-stack">
+              <span class="stack-tag">PHP 7</span>
+              <span class="stack-tag">MySQL</span>
+              <span class="stack-tag">JavaScript</span>
+              <span class="stack-tag">Kibana</span>
+              <span class="stack-tag">Twig</span>
+              <span class="stack-tag">API REST</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider-line"/>
+
+        <!-- MyNestale CTO -->
+        <div class="exp-item">
+          <div class="exp-date">2012 – 2014</div>
+          <div class="exp-body">
+            <div class="exp-role">CTO Hands On</div>
+            <div class="exp-company">MyNestale</div>
+            <br>
+            <div>
+              <p>Direction technique pour une plateforme e-commerce internationale exploitant l’inversion des saisons entre l’Europe et l’Australie.</p>
+            </div>
+            <ul class="exp-bullets">  
+              <li><u>Management International</u>: Encadrement d'une équipe de 3 personnes avec une coordination quotidienne en anglais (Daily meetings, documentation, échanges avec les équipes en Australie).</li>
+              <li><u>Architecture & Développement</u>: Pilotage et maintenance d'un écosystème hybride avec un Back-office sous Zend Framework et un Front-office sous CodeIgniter.</li>
+              <li><u>Expertise Métier & Logistique</u>: Informatisation complète de la chaîne logistique pour gérer les flux spécifiques aux ventes privées internationales.</li>
+              <li><u>Performance & Data</u>: Optimisation des bases de données MySQL et du Website pour garantir la fluidité des ventes quotidiennes à fort trafic.</li>
+              <li><u>Gestion d'Infrastructure</u>: Responsable du parc informatique et de la haute disponibilité des services critiques.</li> 
+            </ul>
+            <div class="exp-stack">
+              <span class="stack-tag">PHP</span>
+              <span class="stack-tag">CodeIgniter</span>
+              <span class="stack-tag">Zend</span>
+              <span class="stack-tag">MySQL</span>
+              <span class="stack-tag">Git</span>
+              <span class="stack-tag">Linux</span>
+              <span class="stack-tag">AJAX</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider-line"/>
+
+        <!-- BazarChic Dev -->
+        <div class="exp-item">
+          <div class="exp-date">2008 – 2011</div>
+          <div class="exp-body">
+            <div class="exp-role">Développeur PHP / MySQL</div>
+            <div class="exp-company">BazarChic</div>
+            <br>
+            <div>
+              <p>Première étape majeure dans l'écosystème BazarChic, où j'ai contribué à la structuration des outils internes durant une phase de forte croissance.</p>
+            </div>
+            <ul class="exp-bullets">
+              <li><u>Outils Métiers & Intranet</u>: Conception et développement de modules critiques pour les RH, la comptabilité et le service client.</li>
+              <li><u>Logistique & Expéditions</u>: Optimisation des flux de livraison via l'intégration de transporteurs majeurs (Relais Kiala, Relais Poste).</li> 
+              <li><u>Industrialisation</u>: Mise en place de générations automatisées de documents via PDF Lib.</li>
+            </ul>
+            <div class="exp-stack">
+              <span class="stack-tag">PHP</span>
+              <span class="stack-tag">MySQL</span>
+              <span class="stack-tag">PDF Lib</span>
+              <span class="stack-tag">HTML/CSS</span>
+              <span class="stack-tag">JavaScript</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider-line"/>
+
+        <!-- Hi Media -->
+        <div class="exp-item">
+          <div class="exp-date">2007</div>
+          <div class="exp-body">
+            <div class="exp-role">Développeur PHP / PostgreSQL</div>
+            <div class="exp-company">Hi Media</div>
+            <br>
+            <div>
+              <p>Développement d'outils de paiement en ligne et intégration via Smarty</p>
+            </div>
+            <ul class="exp-bullets">
+              <li>Développement d'outils de paiement en ligne et intégration via Smarty</li>
+              <li>Mise en place de tests unitaires avec Selenium</li>
+            </ul>
+            <div class="exp-stack">
+              <span class="stack-tag">PHP</span>
+              <span class="stack-tag">PostgreSQL</span>
+              <span class="stack-tag">Smarty</span>
+              <span class="stack-tag">Selenium</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider-line"/>
+
+        <!-- Dexia / CNP -->
+        <div class="exp-item">
+          <div class="exp-date">2003 – 2007</div>
+          <div class="exp-body">
+            <div class="exp-role">Développeur Web</div>
+            <div class="exp-company">Dexia Partenaires / CNP Capeor</div>
+            <br>
+            <div>
+              <p>Développement d'outils d'aide à la décision, moteurs de recherche et simulateurs bancaires</p>
+            </div>
+            <ul class="exp-bullets">
+              <li>Développement d'outils d'aide à la décision, moteurs de recherche et simulateurs bancaires</li>
+              <li>Optimisation de requêtes et extractions dynamiques de données vers Excel</li>
+            </ul>
+            <div class="exp-stack">
+              <span class="stack-tag">PHP</span>
+              <span class="stack-tag">PostgreSQL</span>
+              <span class="stack-tag">Smarty</span>
+              <span class="stack-tag">Selenium</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider-line"/>
+
+        <!-- Emailjob -->
+        <div class="exp-item">
+          <div class="exp-date">2000 – 2002</div>
+          <div class="exp-body">
+            <div class="exp-role">Analyste Programmeur PL/SQL Oracle</div>
+            <div class="exp-company">Emailjob</div>
+            <ul class="exp-bullets">
+              <li>Création d'outils de gestion via packages et procédures stockées</li>
+              <li>Support et assistance technique du parc informatique (70 postes)</li>
+            </ul>
+            <div class="exp-stack">
+              <span class="stack-tag">PL/SQL</span>
+              <span class="stack-tag">Oracle</span>
+              <span class="stack-tag">HTML/JS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

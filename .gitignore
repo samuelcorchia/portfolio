@@ -1,0 +1,47 @@
+# =========================
+# LARAVEL CORE
+# =========================
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+
+# =========================
+# secrets infra
+# =========================
+docker/.env
+docker/**/.env
+
+# =========================
+# ENV FILES (CRITIQUE)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# DOCKER / INFRA LOCAL
+# =========================
+docker-compose.override.yml
+
+# =========================
+# SYSTEM FILES
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE
+# =========================
+.vscode
+.idea
+
+# =========================
+# CACHE / BUILD
+# =========================
+/bootstrap/cache/*
+/storage/debugbar

@@ -1,0 +1,31 @@
+services:
+
+  portfolio-php:
+    build: .
+    volumes:
+      - .:/var/www
+    networks:
+      - backend
+      - traefik
+
+  portfolio-nginx:
+    image: nginx:alpine
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - portfolio-php
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portfolio.rule=Host(`portfolio.duckdns.org`)"
+      - "traefik.http.routers.portfolio.entrypoints=websecure"
+      - "traefik.http.routers.portfolio.tls.certresolver=letsencrypt"
+      - "traefik.http.services.portfolio.loadbalancer.server.port=80"
+
+networks:
+  backend:
+    external: true
+  traefik:
+    external: true

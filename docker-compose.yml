@@ -1,31 +1,27 @@
+name: perso
 services:
-
-  portfolio-php:
-    build: .
-    volumes:
-      - .:/var/www
-    networks:
-      - backend
-      - traefik
-
-  portfolio-nginx:
+  nginx:
     image: nginx:alpine
+    restart: unless-stopped
     volumes:
-      - .:/var/www
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - portfolio-php
-    networks:
-      - traefik
+      - .:/usr/share/nginx/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [web]
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portfolio.rule=Host(`samuelcorchia.duckdns.org`)"
-      - "traefik.http.routers.portfolio.entrypoints=websecure"
-      - "traefik.http.routers.portfolio.tls.certresolver=letsencrypt"
-      - "traefik.http.services.portfolio.loadbalancer.server.port=80"
-
+      traefik.enable: 'true'
+      traefik.scope: public
+      traefik.docker.network: web
+      traefik.http.routers.perso.rule: Host(`samuelcorchia.duckdns.org`)
+      traefik.http.routers.perso.entrypoints: websecure
+      traefik.http.routers.perso.tls.certresolver: letsencrypt
+      traefik.http.routers.perso.service: perso
+      traefik.http.services.perso.loadbalancer.server.port: '80'
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://127.0.0.1/']
+      interval: 30s
+      timeout: 5s
+      retries: 3
 networks:
-  backend:
+  web:
     external: true
-  traefik:
-    external: true
+    name: web
